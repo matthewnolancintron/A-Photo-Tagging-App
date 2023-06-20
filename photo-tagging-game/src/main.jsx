@@ -53,6 +53,15 @@ async function fetchLevelsData() {
   return levelsData;
 }
 
+// Get a reference to the warning element
+const warningElement = document.querySelector('.firebase-emulator-warning');
+
+// Check if the warning element exists
+if (warningElement) {
+  // Remove the warning element from its parent
+  warningElement.parentNode.removeChild(warningElement);
+}
+
 
 async function renderApp() {
   const levelsData = await fetchLevelsData();
