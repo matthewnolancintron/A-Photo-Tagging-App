@@ -1,7 +1,7 @@
 import { useState } from 'react'
 // import Level from './components/Level';
 import './App.css'
-import Level from './components/level';
+import Level from './components/Level';
 
 function App({levelsData}) {
   const [currentLevel, setCurrentLevel] = useState(0);
@@ -19,7 +19,7 @@ function App({levelsData}) {
   }
   
   return (
-   <div>
+   <div id="app">
      <Level levelData={nextLevelData} onLevelCompletion={handleLevelCompletion} />
    </div>
   )
