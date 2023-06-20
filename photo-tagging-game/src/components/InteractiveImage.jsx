@@ -5,6 +5,7 @@
 // it can emit an event or pass the relevant
 // data (such as the clicked item's coordinates) to the LevelComponent.  
 import React, { useState, useEffect, useRef } from 'react';
+import '../App.css'
 
 const InteractiveImage = ({ imageUrl, itemData, defaultImageWidth, defaultImageHeight, onItemClick, openMenu }) => {
   const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
@@ -115,12 +116,12 @@ const InteractiveImage = ({ imageUrl, itemData, defaultImageWidth, defaultImageH
   };
 
   return (
-    <div>
+    <div id='interactiveImage'>
       <img
         src={imageUrl}
         onClick={handleImageClick}
         ref={imageRef}
-        style={{ width: '100%', height: 'auto', position: 'relative', }}
+        style={{ width: '100%', height: 'auto', position: 'relative', objectFit: "contain"}}
         alt="Game Image"
         onLoad={handleImageResize}
       />
