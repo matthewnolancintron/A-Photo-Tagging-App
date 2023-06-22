@@ -28,7 +28,11 @@ const ContextMenu = ({ itemNames, onOptionSelect, position,isVisible }) => {
       <ul>
         {itemNames.map((item, index) => (
           <li key={index}
-              onClick={() => onOptionSelect(item)}
+              // onClick={() => onOptionSelect(item)}
+              onClick={(event) => {
+                event.preventDefault(); // Prevent the default behavior or else the page scroll will jump to the top after each item found
+                onOptionSelect(item); // Call the onOptionSelect function with the item
+              }}
               style={{ ...listItemStyle, ...listItemHoverStyle }}
           >
             <a href="#">{item}</a>
