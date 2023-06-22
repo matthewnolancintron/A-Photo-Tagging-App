@@ -1,71 +1,54 @@
-/**     
-  3. Render the image and items based on the retrieved data.
-    Use the dynamic image URL to display the image and
-    create interactive elements for the items based on 
-    their hitbox coordinates.
-
-  4. Implement the logic to detect when the user finds all the items
-     in the level. 
-     You can track the user's progress by keeping a count of the found
-     items or using any other suitable method.
-     When all the items are found, consider the level as complete.
-
-  5. Upon level completion,
-     update the game state to progress to the next level.
-     This can involve updating the current level identifier 
-     or any other relevant level information.
-
-  create a dynamic and evolving game experience 
-  where the images and item data change with each level.
-  It adds variety and challenges for the player,
-  keeping the game engaging and exciting.
-  level system where the image changes
-  when the user finds all the items in the current level.
-  Upon completion, you can fetch the data for the next level
-  and update the game accordingly.
-
-  Remember to handle any necessary
-  cleanup or reset operations
-  when transitioning between levels to ensure
-  a smooth gameplay experience.
- */
-
-
-
-/**
- * question to ask gpt later:
- * 
- * I'm importing firebase in main.jsx and in level.jsx
-in main it's to set up the firebase app and connect the emulators,
-in level it's to retrieve some data from firestore.
-
-I'm not sure if i should be importing firebase twice
-or if I should pass it down to app and then have app pass it down
-to level?
-
-or if I should use the context api?
-
-eventually I'll have to work with auth and anonymous users
-not sure of the specifices just yet.
- */
-
 import React, { useState, useEffect } from 'react';
 import InteractiveImage from './InteractiveImage';
 import ContextMenu from './ContextMenu';
-import LoginArea from './LoginArea';
+// import LoginArea from './LoginArea';
+import Progress from './Progress';
+import Timer from './Timer';
+import Notification from './Notification';
 import '../App.css'
 
-const Level = ({ levelData, onLevelCompletion }) => {
+const Level = ({ levelData, onLevelCompletion, timer }) => {
   // itemsFound keeps track of the players progress in the level
   const [itemsFound, setItemsFound] = useState([]);
 
   // the current item the user clicked on the image
   const [clickedItem, setClickedItem] = useState(null);
 
+  //
   const [isContextMenuOpen, setIsContextMenuOpen] = useState(false);
 
   //postition of context menu
   const [position, setPosition] = useState({ x: 0, y: 0 });
+
+  //
+  const [notification, setNotification] = useState(null);
+
+  //
+  const addNotification = (message) => {
+    // const newNotification = { id: Date.now(), message };
+    // setNotification(newNotification);
+
+    if (notification) {
+      closeNotification();
+      setTimeout(() => {
+        setNotification({ id: Date.now(), message, slideOut: false });
+      }, 300); // Wait for the previous notification to slide out before adding the new one
+    } else {
+      setNotification({ id: Date.now(), message, slideOut: false });
+    }
+  };
+
+  //
+  const closeNotification = (id) => {
+    setNotification((prevNotification) => ({
+      ...prevNotification,
+      slideOut: true
+    }));
+
+    setTimeout(() => {
+      setNotification(null);
+    }, 300); // Wait for the animation to finish before removing the notification
+  };
 
   useEffect(() => {
     // This function will be triggered whenever `itemsFound` is updated
@@ -107,6 +90,11 @@ const Level = ({ levelData, onLevelCompletion }) => {
       if (clickedItem === option) {
         // add the option to itemsFound
         setItemsFound((prevItems) => [...prevItems, option]); // Update the array state by creating a new array
+
+        //todo: add marker to image
+
+      } else {
+        addNotification('Incorrect choice. Try again.'); // Add a new notification for an incorrect choice
       }
     }
 
@@ -146,9 +134,10 @@ const Level = ({ levelData, onLevelCompletion }) => {
        what data needs to be saved and retrived
        check docs for setting up auth
         */}
-      <LoginArea
+      {/* <LoginArea
 
-      />
+      /> */}
+
       <InteractiveImage
         imageUrl={levelData.imageUrl}
         defaultImageWidth={levelData.intrinsicSize.width}
@@ -162,12 +151,48 @@ const Level = ({ levelData, onLevelCompletion }) => {
            make it display off to the side of the image in the margins
            also make it sticky so that it is visible when scrolling.
        */}
-
-       {/*
+      <Progress
+        numberOfItemsFound={itemsFound.length}
+        numberOfItemsToFind={levelData.items.map(item => item.name).length}
+      />
+      {/*
           add timer similar to progress 
           need to look around to figure out how to get the data for this 
           then displaying it should be similar to the progress display
         */}
+      <Timer
+        timer={timer}
+      />
+
+      {/*
+        todo add component that display characters that need to be found
+        find a profile or icon picture of the characters and display them
+        to the side similar to the progress and timer
+        or
+        update the progress to include this information by
+        instead of using the x / total show the icons and as the player
+        find them by highlighting the border of the icon with a green border
+        could still keep the x/total maybe make a container that shows the icons
+        update the icons as the player finds them and in the corner of the container
+        show the progress as the x/total information. 
+       */}
+      {/* Render the notifications */}
+      <div className="notification-container">
+        {notification && (
+          <Notification
+            notification={notification}
+            onClose={closeNotification}
+            // className={notification ? 'slide-in' : ''}
+            className={`notification ${notification.slideOut ? 'slide-out' : ''}`}
+          />
+        )}
+      </div>
+
+
+      {/* 
+        add an error message component to level:
+        Provide the user with appropriate feedback (e.g. if wrong, an error message).
+      */}
 
       {isContextMenuOpen &&
         <ContextMenu
@@ -176,8 +201,6 @@ const Level = ({ levelData, onLevelCompletion }) => {
           position={position}
           isVisible={isContextMenuOpen}
         />
-
-
       }
     </div>
   );
