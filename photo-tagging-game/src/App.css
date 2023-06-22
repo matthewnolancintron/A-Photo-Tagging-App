@@ -13,6 +13,18 @@
   
 }
 
+.Progress{
+  position: fixed;
+  top:50vh;
+  left:91vw;
+}
+
+.Timer{
+  position: fixed;
+  top: 50vh;
+  left: 1vw;
+}
+
 #interactiveImage {
   margin: 0 10%;
 }
@@ -26,4 +38,55 @@
 
 .loginButton{
   margin-left: 10%;
+}
+
+.notification-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+}
+
+.notification p {
+  margin: 0;
+}
+
+
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 200px;
+  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  border-radius: 4px;
+  opacity: 0;
+  transform: translateY(100%);
+  animation: slide-in 0.3s ease-in-out forwards;
+}
+
+@keyframes slide-in {
+  0% {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.notification.slide-out {
+  animation: slide-out 0.3s ease-in-out forwards;
+}
+
+@keyframes slide-out {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(100%);
+  }
 }
