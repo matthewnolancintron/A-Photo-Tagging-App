@@ -7,10 +7,36 @@
 import React, { useState, useEffect, useRef } from 'react';
 import '../App.css'
 
-const InteractiveImage = ({ imageUrl, itemData, defaultImageWidth, defaultImageHeight, onItemClick, openMenu }) => {
+const InteractiveImage = ({ imageUrl, itemData, defaultImageWidth, defaultImageHeight, onItemClick, openMenu, namesOfMarkersToAdd }) => {
   const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
   const imageRef = useRef(null);
   const [scaledItemsHitboxes, setScaledItemsHitboxes] = useState([]);
+  const [markersData, setMarkersData] = useState([]);
+
+
+
+  useEffect(() => {
+    const filteredMarkers = scaledItemsHitboxes.filter((item) =>
+      namesOfMarkersToAdd.includes(item.name)
+    );
+  
+    const updatedMarkersData = filteredMarkers.map((item) => {
+      const centerX = (item.startX + item.endX) / 2;
+      const centerY = (item.startY + item.endY) / 2;
+  
+      return {
+        name: item.name,
+        styles: {
+          top: centerY,
+          left: centerX,
+        
+        },
+      };
+    });
+  
+    setMarkersData(updatedMarkersData);
+  }, [namesOfMarkersToAdd, scaledItemsHitboxes]);
+  
 
   /**
    Get the width and height of the current image dimensions  
@@ -79,8 +105,8 @@ const InteractiveImage = ({ imageUrl, itemData, defaultImageWidth, defaultImageH
   const handleImageClick = (event) => {
     const image = event.target;
     const imageRect = image.getBoundingClientRect();
-    const x = (event.clientX - imageRect.left) 
-    const y = (event.clientY - imageRect.top) 
+    const x = (event.clientX - imageRect.left)
+    const y = (event.clientY - imageRect.top)
 
 
     openMenu(event);
@@ -99,8 +125,8 @@ const InteractiveImage = ({ imageUrl, itemData, defaultImageWidth, defaultImageH
         clickedCoords.y >= scaledItemsHitbox.startY &&
         clickedCoords.y <= scaledItemsHitbox.endY
       ) {
-        console.log('?')
         // Match found, handle the logic for the matched item
+        //call function to send data to level
         handleMatchedItem(scaledItemsHitbox.name);
         break;
       }
@@ -109,19 +135,40 @@ const InteractiveImage = ({ imageUrl, itemData, defaultImageWidth, defaultImageH
 
   //send the item that was matched to level
   const handleMatchedItem = (itemName) => {
+
     // Logic for when a matched item is found
     console.log('Matched item:', itemName);
     onItemClick(itemName);
 
   };
 
+
+  //fix marker position it seems to be off by a bit
+
   return (
     <div id='interactiveImage'>
+      {markersData.map((marker) => (
+        <div
+          key={marker.name}
+          className="marker"
+          style={{position:'absolute', 
+                  left: marker.styles.left,
+                  top: marker.styles.top,
+                  // right:marker.styles.right,
+                  // bottom:marker.styles.bottom,
+                  borderRadius:'50%',
+                  backgroundColor:'red',
+                  zIndex:'1',
+                  width:'10px',
+                  height:'10px',
+                 }}
+        ></div>
+      ))}
       <img
         src={imageUrl}
         onClick={handleImageClick}
         ref={imageRef}
-        style={{ width: '100%', height: 'auto', position: 'relative', objectFit: "contain"}}
+        style={{ width: '100%', height: 'auto', position: 'relative', objectFit: "contain" }}
         alt="Game Image"
         onLoad={handleImageResize}
       />

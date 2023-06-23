@@ -23,6 +23,11 @@ const Level = ({ levelData, onLevelCompletion, timer }) => {
   //
   const [notification, setNotification] = useState(null);
 
+
+  //
+  const [namesOfItemsWhereMarkersNeedToBeAdded, setNamesOfItemsWhereMarkersNeedToBeAdded] = useState([]);
+
+
   //
   const addNotification = (message) => {
     // const newNotification = { id: Date.now(), message };
@@ -90,9 +95,6 @@ const Level = ({ levelData, onLevelCompletion, timer }) => {
       if (clickedItem === option) {
         // add the option to itemsFound
         setItemsFound((prevItems) => [...prevItems, option]); // Update the array state by creating a new array
-
-        //todo: add marker to image
-
       } else {
         addNotification('Incorrect choice. Try again.'); // Add a new notification for an incorrect choice
       }
@@ -107,7 +109,6 @@ const Level = ({ levelData, onLevelCompletion, timer }) => {
   const handleContextMenuClose = () => {
     // Clear the clicked item and selected option when the context menu is closed
     setClickedItem(null);
-
 
     //close menu
     setIsContextMenuOpen(false);
@@ -145,6 +146,7 @@ const Level = ({ levelData, onLevelCompletion, timer }) => {
         onItemClick={handleItemClick}
         itemData={levelData.items}
         openMenu={openContextMenu}
+        namesOfMarkersToAdd={itemsFound}
       />
 
       {/* todo add the progress component
