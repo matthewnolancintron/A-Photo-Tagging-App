@@ -10,7 +10,11 @@
 }
 
 #level {
-  
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .Progress{
@@ -26,7 +30,7 @@
 }
 
 #interactiveImage {
-  margin: 0 10%;
+  margin:0 10%
 }
 
 .loginArea {
