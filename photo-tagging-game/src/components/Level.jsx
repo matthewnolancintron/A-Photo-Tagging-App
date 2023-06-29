@@ -60,8 +60,9 @@ const Level = ({ levelData, onLevelCompletion, timer }) => {
     // Perform the action or trigger the function here
     //if check if user found all of the items
     if (levelData.items.map(item => item.name).length === itemsFound.length
-      && levelData.items.map(item => item.name).every((item) => itemsFound.includes(item))) {
+      && levelData.items.map(item => item.name).every((item) => itemsFound.map(item=>item.name).includes(item))) {
       // userFound all items level complete:
+      console.log('level complete?')
       handleLevelComplete();
     }
   }, [itemsFound]);
@@ -90,14 +91,16 @@ const Level = ({ levelData, onLevelCompletion, timer }) => {
     //todo make that function and the condtion in this function for that logic
 
     //if the option selected hasn't already been found 
-    if (!itemsFound.includes(option)) {
+    if (!itemsFound.map(item=>item.name).includes(option)) {
       //if the clicked item matches the option seletec
       if (clickedItem === option) {
         // add the option to itemsFound
-        setItemsFound((prevItems) => [...prevItems, option]); // Update the array state by creating a new array
+        setItemsFound((prevItems) => [...prevItems, {name:option, location:position}]); // Update the array state by creating a new array
       } else {
         addNotification('Incorrect choice. Try again.'); // Add a new notification for an incorrect choice
       }
+    } else {
+      addNotification('Option selected has already been found')
     }
 
     // close the context menu
@@ -189,7 +192,6 @@ const Level = ({ levelData, onLevelCompletion, timer }) => {
           />
         )}
       </div>
-
 
       {/* 
         add an error message component to level:
