@@ -7,32 +7,24 @@ import Timer from './Timer';
 import Notification from './Notification';
 import '../App.css'
 
-const Level = ({ levelData, onLevelCompletion, timer }) => {
+const Level = ({ levelData, onLevelCompletion, timer, stopTimer }) => {
   // itemsFound keeps track of the players progress in the level
   const [itemsFound, setItemsFound] = useState([]);
-
   // the current item the user clicked on the image
   const [clickedItem, setClickedItem] = useState(null);
-
   //
   const [isContextMenuOpen, setIsContextMenuOpen] = useState(false);
-
   //postition of context menu
   const [position, setPosition] = useState({ x: 0, y: 0 });
-
   //
   const [notification, setNotification] = useState(null);
-
-
   //
   const [namesOfItemsWhereMarkersNeedToBeAdded, setNamesOfItemsWhereMarkersNeedToBeAdded] = useState([]);
-
 
   //
   const addNotification = (message) => {
     // const newNotification = { id: Date.now(), message };
     // setNotification(newNotification);
-
     if (notification) {
       closeNotification();
       setTimeout(() => {
@@ -62,7 +54,6 @@ const Level = ({ levelData, onLevelCompletion, timer }) => {
     if (levelData.items.map(item => item.name).length === itemsFound.length
       && levelData.items.map(item => item.name).every((item) => itemsFound.map(item=>item.name).includes(item))) {
       // userFound all items level complete:
-      console.log('level complete?')
       handleLevelComplete();
     }
   }, [itemsFound]);
@@ -80,16 +71,6 @@ const Level = ({ levelData, onLevelCompletion, timer }) => {
 
   // saves the most recent option the user selected from the context menu to setSelectedOption
   const handleOptionSelect = (option) => {
-    // console.log(option);
-
-    // Perform the necessary checks and update the game state
-    // based on the clicked item and selected option
-    // if selectedOption and clickedItem are equal and item isn't already in
-    // itemsFound add it to itemsFound
-    //check if items found has all of the items that need to found 
-    // in the level and using a check if all item have been found function
-    //todo make that function and the condtion in this function for that logic
-
     //if the option selected hasn't already been found 
     if (!itemsFound.map(item=>item.name).includes(option)) {
       //if the clicked item matches the option seletec
@@ -102,17 +83,14 @@ const Level = ({ levelData, onLevelCompletion, timer }) => {
     } else {
       addNotification('Option selected has already been found')
     }
-
     // close the context menu
     handleContextMenuClose();
   };
-
 
   // clears setClickedItem and setSelectedOption when the context menu is closed
   const handleContextMenuClose = () => {
     // Clear the clicked item and selected option when the context menu is closed
     setClickedItem(null);
-
     //close menu
     setIsContextMenuOpen(false);
   };
@@ -125,8 +103,6 @@ const Level = ({ levelData, onLevelCompletion, timer }) => {
     setClickedItem(null);
     setIsContextMenuOpen(false);
     setPosition({ x: 0, y: 0 });
-
-    // Trigger the logic for the next level
     onLevelCompletion();
   }
 
@@ -167,6 +143,9 @@ const Level = ({ levelData, onLevelCompletion, timer }) => {
         */}
       <Timer
         timer={timer}
+        stopTimer={stopTimer}
+        
+        
       />
 
       {/*
