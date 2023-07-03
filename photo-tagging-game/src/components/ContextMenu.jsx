@@ -24,6 +24,10 @@ const ContextMenu = ({ itemNames, onOptionSelect, position,isVisible }) => {
   };
 
   return (
+    /**I could update this element to use a dialoge element and use the show dialoge option instead of show modal */
+    /**
+     * could also display icons of the character your suppose to find
+     */
     <div id="contextMenu" style={menuStyle}>
       <ul>
         {itemNames.map((item, index) => (
