@@ -1,9 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
+import { addDoc, collection } from 'firebase/firestore';
+import { formatTime } from './components/formatTime';
 import './App.css';
 import Level from './components/Level.jsx';
 import SaveScoreModal from './components/SaveScoreModal';
+import Leaderboard from './components/Leaderboard';
 
-function App({ levelsData }) {
+
+function App({ db, levelsData }) {
   const [currentLevel, setCurrentLevel] = useState(0);
   const [nextLevelData, setNextLevelData] = useState(levelsData[currentLevel]);
   const [timer, setTimer] = useState(0);
@@ -12,7 +16,7 @@ function App({ levelsData }) {
   const [scoreTime, setScoreTime] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [playerName, setPlayerName] = useState('');
-  const [isGameFinished,setIsGameFinished] = useState(false);
+  const [isGameFinished, setIsGameFinished] = useState(false);
 
   useEffect(() => {
     startTimer();
@@ -47,7 +51,7 @@ function App({ levelsData }) {
       saveLevelTime(elapsedSeconds);
       stopTimer();
       setShowModal(true);
-  
+
     } else {
       console.log('Congratulations! You completed the game');
       const endTime = new Date();
@@ -59,37 +63,57 @@ function App({ levelsData }) {
     }
   };
 
-  const handleSubmitName = (name) => {
+  const handleSubmitName = async (name) => {
     setPlayerName(name);
+
+    try {
+      const highScoresCollection = collection(db, 'highScores');
+      const docRef = await addDoc(highScoresCollection, {
+        playerName: name,
+        level: currentLevel,
+        time: formatTime(scoreTime)
+      });
+      console.log('Document written with ID: ', docRef.id);
+    } catch (error) {
+      console.error('Error adding document: ', error);
+    }
+
     setShowModal(false);
     handleSaveScoreModalClose()
   };
 
   const handleSaveScoreModalClose = () => {
-      if(!isGameFinished){
-        setShowModal(false);
-        const nextLevel = currentLevel + 1;
-        setCurrentLevel(nextLevel);
-        setNextLevelData(levelsData[nextLevel]);
-      } else {
-        console.log('game is finished')
-      }
+    if (!isGameFinished) {
+      setShowModal(false);
+      const nextLevel = currentLevel + 1;
+      setCurrentLevel(nextLevel);
+      setNextLevelData(levelsData[nextLevel]);
+    } else {
+      console.log('game is finished')
+    }
   };
 
   return (
     <div id="app">
-      <Level 
-      levelData={nextLevelData}
-      onLevelCompletion={handleLevelCompletion}
-      timer={timer}
-      stopTimer={stopTimer}
-      />
+      {!isGameFinished && (
+      <Level
+        levelData={nextLevelData}
+        onLevelCompletion={handleLevelCompletion}
+        timer={timer}
+        stopTimer={stopTimer}
+      />)}
+      
       {showModal && (
         <SaveScoreModal
           onClose={handleSaveScoreModalClose}
           onSubmit={handleSubmitName}
           scoreTime={scoreTime}
         />
+      )}
+
+      {
+      isGameFinished && (
+        <Leaderboard db={db}/>
       )}
     </div>
   );

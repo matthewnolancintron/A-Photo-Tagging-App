@@ -67,7 +67,7 @@ async function renderApp() {
   const levelsData = await fetchLevelsData();
   ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
-      <App levelsData={levelsData} />
+      <App db={db} levelsData={levelsData} />
     </React.StrictMode>
   );
 }

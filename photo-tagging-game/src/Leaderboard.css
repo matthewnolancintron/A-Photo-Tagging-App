@@ -1,0 +1,63 @@
+.leaderboard {
+    background-color: #000;
+    color: #fff;
+    padding: 20px;
+    font-family: 'Press Start 2P', cursive;
+  }
+  
+  .leaderboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .leaderboard-header h2 {
+    font-size: 24px;
+  }
+  
+  .level-buttons {
+    display: flex;
+  }
+  
+  .level-buttons button {
+    background-color: transparent;
+    border: none;
+    color: #fff;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 14px;
+    margin-left: 10px;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  
+  .level-buttons button.active {
+    background-color: #fff;
+    color: #000;
+  }
+  
+  .leaderboard-table {
+    max-height: 300px;
+    overflow-y: auto;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #fff;
+  }
+  
+  th {
+    font-size: 16px;
+    text-transform: uppercase;
+  }
+  
+  tbody tr:nth-child(even) {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  
