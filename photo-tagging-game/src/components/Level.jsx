@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import InteractiveImage from './InteractiveImage';
 import ContextMenu from './ContextMenu';
-// import LoginArea from './LoginArea';
 import Progress from './Progress';
 import Timer from './Timer';
 import Notification from './Notification';
@@ -187,6 +186,8 @@ const Level = ({ levelData, onLevelCompletion, timer, stopTimer }) => {
       }
     </div>
   );
+
+
 };
 
 export default Level;
